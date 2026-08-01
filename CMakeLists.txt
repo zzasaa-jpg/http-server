@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(HTTP_Server)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/executable_code)
+
+add_executable(server
+    src/main.cpp
+)
+
+target_link_libraries(server PRIVATE ws2_32)

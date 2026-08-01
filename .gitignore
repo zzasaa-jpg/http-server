@@ -1,0 +1,14 @@
+# Vim files
+*.swp
+.*.sw?
+
+*~
+*.un~
+*.exe
+
+# Build artifacts
+build/
+CMakeFiles/
+CMakeCache.txt
+*.o
+*.obj
