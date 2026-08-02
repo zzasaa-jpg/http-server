@@ -29,6 +29,7 @@ int SOCKET_Class::bindSocket()
     if (bind(serverSocket, (sockaddr *)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
     {
         std::cout << "Bind failed!\n" << WSAGetLastError() << std::endl;
+        return 1;
     }
     return 0;
 }
@@ -38,6 +39,7 @@ int SOCKET_Class::listenSocket()
     if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR)
     {
         std::cout << "Listen failed\n" << std::endl;
+        return 1;
     }
     return 0;
 }

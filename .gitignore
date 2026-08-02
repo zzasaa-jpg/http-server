@@ -12,3 +12,5 @@ CMakeFiles/
 CMakeCache.txt
 *.o
 *.obj
+
+.vscode/

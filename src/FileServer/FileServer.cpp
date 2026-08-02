@@ -7,10 +7,9 @@
 #include <fstream>
 #include <cstdint>
 
-// HTTP_Response_Class http_res;
-
-void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType){
-     if (filePath.empty() || contentType.empty())
+void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType)
+{
+    if (filePath.empty() || contentType.empty())
     {
         std::cout << "invalid filePath or conetentType\n";
         return;
@@ -26,8 +25,8 @@ void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
     if (!file.is_open())
     {
         std::cout << filePath << "file cannot open!\n";
-        std::string status = "404 Not found", contentType_ = "text/plain", contentLength = std::to_string(status.size()), body_ = status;
-        std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength, body_);
+        std::string status = "404 Not found", contentType_ = "text/plain", contentLength = std::to_string(status.size());
+        std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength) + status;
         send(clientSocket, header.c_str(), header.size(), 0);
         closesocket(clientSocket);
         return;
@@ -35,21 +34,14 @@ void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
 
     std::streamsize size = file.tellg();
 
-    if (size == -1)
+    if (size == -1 || size == 0)
     {
-        std::cout << "Failed to deremine file: " << filePath << "size\n";
-        std::string status = "400 Bad request", contentType_ = "text/plain", contentLength = std::to_string(status.size()), body_ = status;
-        std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength, body_);
-        send(clientSocket, header.c_str(), header.size(), 0);
-        closesocket(clientSocket);
-        return;
-    }
-
-    if (size == 0)
-    {
-        std::cout << "File is empty: " << filePath << "size\n";
-        std::string status = "400 Bad request", contentType_ = "text/plain", contentLength = std::to_string(status.size()), body_ = status;
-        std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength, body_);
+        if (size == 0)
+            std::cout << "-- FILE IS EMPTY => " << filePath << "\n";
+        else
+            std::cout << "-- Failed to deremine file size.\n";
+        std::string body = "File Content Length 0", status = size == 0 ? "200 OK" : "400 Bad request", contentType_ = "text/plain", contentLength = std::to_string(body.size());
+        std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength) + (size == 0 ? body : "|");
         send(clientSocket, header.c_str(), header.size(), 0);
         closesocket(clientSocket);
         return;
@@ -63,8 +55,8 @@ void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
         throw std::runtime_error("Failed reading file!\n");
     }
 
-    std::string status = "200 OK", contentType_ = contentType, contentLength = std::to_string(size), body_ = "";
-    std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength, body_);
+    std::string status = "200 OK", contentType_ = contentType, contentLength = std::to_string(size);
+    std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength);
 
     send(clientSocket, header.c_str(), header.size(), 0);
     send(clientSocket, reinterpret_cast<char *>(fileBuffer.data()), static_cast<int>(fileBuffer.size()), 0);
