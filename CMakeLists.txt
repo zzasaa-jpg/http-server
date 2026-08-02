@@ -7,6 +7,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/executable_code)
 
 add_executable(server
     src/main.cpp
+    src/WSAStartup/WSAStartup.cpp
+    src/SOCKET/Socket.cpp
+    src/FileServer/FileServer.cpp
 )
 
 target_link_libraries(server PRIVATE ws2_32)
