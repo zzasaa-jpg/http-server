@@ -6,30 +6,35 @@
 #include <string>
 #include <fstream>
 #include <cstdint>
+#include "../Logger/Logger.hpp"
 
-void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType)
+bool FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType)
 {
+    Logger_Class log;
     if (filePath.empty() || contentType.empty())
     {
         std::cout << "invalid filePath or conetentType\n";
-        return;
+        log.logger("Error", __FILE__, "invalid filePath or conetentType.");
+        return false;
     }
 
     if (clientSocket == INVALID_SOCKET)
     {
         std::cout << "invalid socket\n";
-        return;
+        log.logger("Error", __FILE__, "invalid socket.");
+        return false;
     }
 
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
         std::cout << filePath << "file cannot open!\n";
+        log.logger("Error", __FILE__, "file cannot open.");
         std::string status = "404 Not found", contentType_ = "text/plain", contentLength = std::to_string(status.size());
         std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength) + status;
         send(clientSocket, header.c_str(), header.size(), 0);
         closesocket(clientSocket);
-        return;
+        return false;
     }
 
     std::streamsize size = file.tellg();
@@ -44,7 +49,7 @@ void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
         std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength) + (size == 0 ? body : "|");
         send(clientSocket, header.c_str(), header.size(), 0);
         closesocket(clientSocket);
-        return;
+        return false;
     }
 
     file.seekg(0, std::ios::beg);
@@ -61,4 +66,5 @@ void FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
     send(clientSocket, header.c_str(), header.size(), 0);
     send(clientSocket, reinterpret_cast<char *>(fileBuffer.data()), static_cast<int>(fileBuffer.size()), 0);
     closesocket(clientSocket);
+    return true;
 }

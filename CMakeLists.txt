@@ -10,6 +10,7 @@ add_executable(server
     src/WSAStartup/WSAStartup.cpp
     src/SOCKET/Socket.cpp
     src/FileServer/FileServer.cpp
+    src/Logger/Logger.cpp
 )
 
 target_link_libraries(server PRIVATE ws2_32)

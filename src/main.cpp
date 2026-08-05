@@ -5,11 +5,14 @@
 #include "./HTTPResponse/HTTPResponse.hpp"
 #include "./FileServer/FileServer.hpp"
 #include "./MIME_type_detection/MIME_type_detection.hpp"
+#include "./Logger/Logger.hpp"
+
 using namespace std;
 
 FILE_SERVER_Class fileServe;
 int main()
 {
+    Logger_Class log;
     // WSA initialition
     wsastartup_Class wsa;
     int results = wsa.init();
@@ -17,24 +20,30 @@ int main()
     // Creating SOCKET
     SOCKET_Class sckt;
 
-    if(sckt.Create_Socket() != 0){
+    if (sckt.Create_Socket() != 0)
+    {
         return 1;
     }
-    
+
     // Set the configureAddress of SOCKET
-    if(sckt.configureAddress() != 0){
+    if (sckt.configureAddress() != 0)
+    {
         return 1;
     }
 
     // Bind the SOCKET
-    if(sckt.bindSocket() != 0){
+    if (sckt.bindSocket() != 0)
+    {
         return 1;
     }
 
     // Listen the SOCKET
-    if(sckt.listenSocket() != 0){
+    if (sckt.listenSocket() != 0)
+    {
         return 1;
     }
+
+    log.init_log_file();
 
     while (true)
     {
@@ -56,7 +65,14 @@ int main()
         if (request.find("GET /favicon.ico") != string::npos)
         {
             string filePath = "../../src/Testing_files/favicon.ico", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("ico");
-            fileServe.serveFile(clientSocket, filePath, contentType);
+            if (fileServe.serveFile(clientSocket, filePath, contentType) == false)
+            {
+                log.logger("Error", __FILE__, "file serve failed.");
+            }
+            else
+            {
+                log.logger("Success", __FILE__, "Successfully file served ico.");
+            }
         }
         else if (request.find("GET /json") != string::npos)
         {
@@ -66,12 +82,26 @@ int main()
         else if (request.find("GET /image") != string::npos)
         {
             string filePath = "../../src/Testing_files/image.jpg", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("jpg");
-            fileServe.serveFile(clientSocket, filePath, contentType);
+            if (fileServe.serveFile(clientSocket, filePath, contentType) == false)
+            {
+                log.logger("Error", __FILE__, "file serve failed.");
+            }
+            else
+            {
+                log.logger("Success", __FILE__, "Successfully file served.");
+            }
         }
         else if (request.find("GET /cpp") != string::npos)
         {
             string filePath = "../../src/main.cpp", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("txt");
-            fileServe.serveFile(clientSocket, filePath, contentType);
+            if (fileServe.serveFile(clientSocket, filePath, contentType) == false)
+            {
+                log.logger("Error", __FILE__, "file serve failed.");
+            }
+            else
+            {
+                log.logger("Success", __FILE__, "Successfully file served.");
+            }
         }
         else
         {

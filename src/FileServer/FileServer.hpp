@@ -6,7 +6,7 @@
 
 class FILE_SERVER_Class{
     public:
-        void serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType);
+        bool serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType);
 };
 
 #endif // FILE SERVER HPP
