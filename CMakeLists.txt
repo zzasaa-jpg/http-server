@@ -11,6 +11,7 @@ add_executable(server
     src/SOCKET/Socket.cpp
     src/FileServer/FileServer.cpp
     src/Logger/Logger.cpp
+    src/HTTPRequest/HTTPRequest.cpp
 )
 
 target_link_libraries(server PRIVATE ws2_32)

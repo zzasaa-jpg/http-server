@@ -28,7 +28,7 @@ bool FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
     std::ifstream file(filePath, std::ios::binary | std::ios::ate);
     if (!file.is_open())
     {
-        std::cout << filePath << "file cannot open!\n";
+        std::cout << filePath << ": file cannot open!\n";
         log.logger("Error", __FILE__, "file cannot open.");
         std::string status = "404 Not found", contentType_ = "text/plain", contentLength = std::to_string(status.size());
         std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength) + status;

@@ -6,6 +6,7 @@
 #include "./FileServer/FileServer.hpp"
 #include "./MIME_type_detection/MIME_type_detection.hpp"
 #include "./Logger/Logger.hpp"
+#include "./HTTPRequest/HTTPRequest.hpp"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ FILE_SERVER_Class fileServe;
 int main()
 {
     Logger_Class log;
+    HTTP_Request_Class parser;
     // WSA initialition
     wsastartup_Class wsa;
     int results = wsa.init();
@@ -60,9 +62,14 @@ int main()
             continue;
         }
 
-        std::string request(buffer, received);
-        cout << request;
-        if (request.find("GET /favicon.ico") != string::npos)
+        std::string raw_request(buffer, received);
+        HTTP_Request request = parser.parse_http_request(raw_request);
+        if (request.method == "GET" && request.path == "/")
+        {
+            string body = "hello world!", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("txt");
+            HTTP_Response_Class::sendData(clientSocket, body, contentType);
+        }
+        else if (request.method == "GET" && request.path == "/favicon.ico")
         {
             string filePath = "../../src/Testing_files/favicon.ico", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("ico");
             if (fileServe.serveFile(clientSocket, filePath, contentType) == false)
@@ -74,12 +81,12 @@ int main()
                 log.logger("Success", __FILE__, "Successfully file served ico.");
             }
         }
-        else if (request.find("GET /json") != string::npos)
+        else if (request.method == "GET" && request.path == "/json")
         {
             string body = "{\"server\": \"Http\", \"lang\": \"C++\", \"array\": \"[1,2,3,4,5]\"}", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("json");
             HTTP_Response_Class::sendData(clientSocket, body, contentType);
         }
-        else if (request.find("GET /image") != string::npos)
+        else if (request.method == "GET" && request.path == "/image")
         {
             string filePath = "../../src/Testing_files/image.jpg", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("jpg");
             if (fileServe.serveFile(clientSocket, filePath, contentType) == false)
@@ -91,7 +98,7 @@ int main()
                 log.logger("Success", __FILE__, "Successfully file served.");
             }
         }
-        else if (request.find("GET /cpp") != string::npos)
+        else if (request.method == "GET" && request.path == "/cpp")
         {
             string filePath = "../../src/main.cpp", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("txt");
             if (fileServe.serveFile(clientSocket, filePath, contentType) == false)
@@ -105,8 +112,9 @@ int main()
         }
         else
         {
-            string body = "hello world!", contentType = "text/plain";
+            string body = "404 Not Found", contentType = MIME_TYPE_DETECTION_CLASS::get_MIME_Type("txt");
             HTTP_Response_Class::sendData(clientSocket, body, contentType);
+            log.logger("Message", __FILE__, body);
         }
     }
     sckt.close();
