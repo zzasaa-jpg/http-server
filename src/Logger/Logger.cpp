@@ -5,6 +5,7 @@
 #include <string>
 #include "../Utilities/Date/Date.h"
 #include "../Utilities/Time/Time.h"
+#include "../Utilities/File_Name/File_Name.hpp"
 
 const std::string LOG_FOLDER_PATH = "../../log";
 const std::string LOG_FILE_PATH = "../../log/server.log.";
@@ -45,8 +46,7 @@ bool Logger_Class::logger(const std::string type, const std::string module_name,
             std::cerr << "server.log file is not found![Logger Module]\n";
             return false;
         }
-
-        std::string append_data = type + " " + dt.get_Date() + " " + time__.get_Time() + " " + module_name + " " + content + "\n";
+        std::string append_data = type + " " + dt.get_Date() + " " + time__.get_Time() + " " + get_file_name(module_name) + " " + content + "\n";
         file << append_data;
         file.close();
         return true;

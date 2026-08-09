@@ -7,24 +7,10 @@
 class MIME_TYPE_DETECTION_CLASS
 {
 public:
-    static std::string get_MIME_Type(const std::string &extension)
-    {
-        auto it = mime_types.find(extension);
-
-        if (it != mime_types.end())
-        {
-            return it->second;
-        }
-
-        return "application/octet-stream";
-    }
+    std::string get_MIME_Type(const std::string &extension);
 
 private:
-    static const std::unordered_map<std::string, std::string> mime_types;
-};
-
-const std::unordered_map<std::string, std::string>
-    MIME_TYPE_DETECTION_CLASS::mime_types = {
+    const std::unordered_map<std::string, std::string> mime_types = {
         // Text
         {"html", "text/html"},
         {"htm", "text/html"},
@@ -61,5 +47,6 @@ const std::unordered_map<std::string, std::string>
         {"pdf", "application/pdf"},
         {"xml", "application/xml"},
         {"zip", "application/zip"}};
+};
 
 #endif // MIME_TYPE_DETECTION_HPP

@@ -9,9 +9,17 @@ add_executable(server
     src/main.cpp
     src/WSAStartup/WSAStartup.cpp
     src/SOCKET/Socket.cpp
+    src/MIME_type_detection/MIME_type_detection.cpp
     src/FileServer/FileServer.cpp
     src/Logger/Logger.cpp
     src/HTTPRequest/HTTPRequest.cpp
+    src/Router/Router.cpp
+    src/Handlers/homeHandler/homeHandler.cpp
+    src/Handlers/faviconHandler/faviconHandler.cpp
+    src/Handlers/imageHandler/imageHandler.cpp
+    src/Handlers/unknown_Route_404/unknown_Route_404.cpp
+    src/Utilities/File_Name/File_Name.cpp
+    src/Handlers/staticFileServeHandler/staticFileServeHandler.cpp
 )
 
 target_link_libraries(server PRIVATE ws2_32)
