@@ -70,8 +70,7 @@ int main()
 
         std::string raw_request(buffer, received);
         HTTP_Request request = parser.parse_http_request(raw_request);
-        std::cout << request.method << " | " << request.path << std::endl;
-
+        std::cout << request.method << " | " << request.path;
         router.route(request.method, request.path, request, clientSocket);
     }
     sckt.close();

@@ -7,10 +7,14 @@
 #include <fstream>
 #include <cstdint>
 #include "../Logger/Logger.hpp"
+#include "../HTTPStatus_Code/HTTPStatus_Code.hpp"
+#include "../MIME_type_detection/MIME_type_detection.hpp"
 
 bool FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType)
 {
     Logger_Class log;
+    HTTPStatus_Code http_status_code;
+    MIME_TYPE_DETECTION_CLASS mime_type;
     if (filePath.empty() || contentType.empty())
     {
         std::cout << "invalid filePath or conetentType\n";
@@ -30,7 +34,7 @@ bool FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
     {
         std::cout << filePath << ": file cannot open!\n";
         log.logger("Error", __FILE__, "file cannot open.");
-        std::string status = "404 Not found", contentType_ = "text/plain", contentLength = std::to_string(status.size());
+        std::string status = http_status_code.Get_HTTPStatus_Code("404"), contentType_ = mime_type.get_MIME_Type("txt"), contentLength = std::to_string(status.size());
         std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength) + status;
         send(clientSocket, header.c_str(), header.size(), 0);
         closesocket(clientSocket);
@@ -45,7 +49,10 @@ bool FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
             std::cout << "-- FILE IS EMPTY => " << filePath << "\n";
         else
             std::cout << "-- Failed to deremine file size.\n";
-        std::string body = "File Content Length 0", status = size == 0 ? "200 OK" : "400 Bad request", contentType_ = "text/plain", contentLength = std::to_string(body.size());
+        std::string body = "File Content Length 0",
+                    status = size != 0 ? http_status_code.Get_HTTPStatus_Code("200") : http_status_code.Get_HTTPStatus_Code("400"),
+                    contentType_ = mime_type.get_MIME_Type("txt"),
+                    contentLength = std::to_string(body.size());
         std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength) + (size == 0 ? body : "|");
         send(clientSocket, header.c_str(), header.size(), 0);
         closesocket(clientSocket);
@@ -59,8 +66,7 @@ bool FILE_SERVER_Class::serveFile(SOCKET clientSocket, std::string &filePath, st
     {
         throw std::runtime_error("Failed reading file!\n");
     }
-
-    std::string status = "200 OK", contentType_ = contentType, contentLength = std::to_string(size);
+    std::string status = http_status_code.Get_HTTPStatus_Code("200"), contentType_ = contentType, contentLength = std::to_string(size);
     std::string header = HTTP_Response_Class::setHeader(status, contentType_, contentLength);
 
     send(clientSocket, header.c_str(), header.size(), 0);

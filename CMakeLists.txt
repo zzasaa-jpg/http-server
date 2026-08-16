@@ -20,6 +20,7 @@ add_executable(server
     src/Handlers/unknown_Route_404/unknown_Route_404.cpp
     src/Utilities/File_Name/File_Name.cpp
     src/Handlers/staticFileServeHandler/staticFileServeHandler.cpp
+    src/HTTPStatus_Code/HTTPStatus_Code.cpp
 )
 
 target_link_libraries(server PRIVATE ws2_32)

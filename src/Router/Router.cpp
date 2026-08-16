@@ -19,7 +19,6 @@ void Router::route(
     auto route = Route_map.find(key);
     if (route == Route_map.end())
     {
-        std::cout << "not found\n";
         unknown_Route(request, clientSocket);
         return;
     }
