@@ -20,8 +20,8 @@ public:
     }
     static void sendData(SOCKET clientSocket, std::string &status, std::string &contentType, std::string &body)
     {
-        std::string status_ = status, contentType_ = contentType, contentLength = std::to_string(body.size());
-        std::string response = setHeader(status_, contentType_, contentLength) + body;
+        std::string contentLength = std::to_string(body.size());
+        std::string response = setHeader(status, contentType, contentLength) + body;
         send(clientSocket, response.c_str(), response.size(), 0);
         closesocket(clientSocket);
         return;

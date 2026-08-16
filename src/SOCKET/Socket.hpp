@@ -16,4 +16,4 @@ class SOCKET_Class{
         sockaddr_in serverAddr;
 };
 
-#endif // SOCKET
+#endif // SOCKET_HPP

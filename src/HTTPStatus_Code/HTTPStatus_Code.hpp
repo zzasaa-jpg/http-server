@@ -62,9 +62,9 @@ private:
         {"423", " Locked (WebDAV; RFC 4918)"},
         {"424", " Failed Dependency (WebDAV; RFC 4918)"},
         {"425", " Too Early (RFC 8470)"},
-        {"426", " Upgrade required"},
-        {"428", " Precondition Required (RFC 6585"},
-        {"429", " Too Many Requests (RFFC 6585)"},
+        {"426", " Upgrade Required"},
+        {"428", " Precondition Required (RFC 6585)"},
+        {"429", " Too Many Requests (RFC 6585)"},
         {"431", " Request Header Fields Too Large (RFC 6585)"},
         {"451", " Unavailable For Legal Reasons (RFC 7725)"},
 

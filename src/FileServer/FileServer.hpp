@@ -9,4 +9,4 @@ class FILE_SERVER_Class{
         bool serveFile(SOCKET clientSocket, std::string &filePath, std::string &contentType);
 };
 
-#endif // FILE SERVER HPP
+#endif // FILE_SERVER_HPP
